@@ -7,8 +7,8 @@ import corsOptions from "./config/corsOption";
 import serverConfig from "./config/serverConfig";
 import sessionOptions from "./config/sessionConfig";
 import internalRoutes from "./routes/internal/index";
-import externalRoutes from "./routes/internal/index";
-import { sequelize } from "./models";
+import externalRoutes from "./routes/external/index";
+import db from "./models/index";
 
 dotenv.config();
 
@@ -44,10 +44,11 @@ app.use(
 const port = serverConfig.port;
 app.listen(port, async () => {
   console.log(`Server is running on http://localhost:${port}`);
-  await sequelize
+  await db.sequelize
     .authenticate()
     .then(async () => {
-      console.log("db connection success");
+      await db.sequelize.sync({ force: false }).then();
+      console.log("db connected");
     })
     .catch((e: Error) => {
       console.log(e);

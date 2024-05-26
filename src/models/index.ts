@@ -1,7 +1,10 @@
 import { Sequelize } from "sequelize";
 import { databaseConfig } from "./../config/databaseConfig";
+import Users from "./Users";
 
-export const sequelize = new Sequelize(
+const db: any = { Users };
+
+let sequelize = new Sequelize(
   databaseConfig.development.database,
   databaseConfig.development.username,
   databaseConfig.development.password,
@@ -10,3 +13,16 @@ export const sequelize = new Sequelize(
     dialect: "mysql",
   }
 );
+
+Object.keys(db).forEach((modelName) => {
+  if (db[modelName].associate) {
+    db[modelName].associate(db);
+  }
+});
+
+db.Users = Users.initModel(sequelize);
+
+db.sequelize = sequelize;
+db.Sequelize = Sequelize;
+
+export default db;
