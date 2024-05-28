@@ -10,6 +10,7 @@ import internalRoutes from "./routes/internal/index";
 import externalRoutes from "./routes/external/index";
 import db from "./models/index";
 import { User } from "@_types/kakao";
+import cookieParser from "cookie-parser";
 
 dotenv.config();
 declare module "express-session" {
@@ -22,6 +23,7 @@ declare module "express-session" {
 const app = express();
 
 app.use(cors(corsOptions));
+app.use(cookieParser());
 app.use(session(sessionOptions));
 app.use(morgan("combined"));
 app.use(express.json());

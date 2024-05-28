@@ -84,7 +84,13 @@ class KakaoService {
       });
     }
 
-    return user;
+    // 'User' 타입의 객체로 반환
+    return {
+      platform, // 'platform' 속성 추가
+      id: user.dataValues.id,
+      nickname: user.dataValues.nickname,
+      profile_image: user.dataValues.profile_image,
+    };
   };
 }
 

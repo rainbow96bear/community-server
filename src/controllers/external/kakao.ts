@@ -3,6 +3,7 @@ import { kakaoService } from "@_services/kakao";
 
 class KakaoController {
   private platform: string;
+
   constructor() {
     this.platform = "kakao";
   }
@@ -19,13 +20,15 @@ class KakaoController {
       const user = await kakaoService.findOrCreateUser(userInfo, this.platform);
 
       req.session.user = user;
-      const data = {
-        id: user.platform + user.id,
-        nickname: user.nickname,
-        profileImg: user.profile_image,
-      };
       res.cookie("sessionID", req.sessionID, { httpOnly: true });
-      res.send(data);
+
+      res.send({
+        user: {
+          id: userInfo.sub,
+          nickname: userInfo.nickname,
+          profile_image: userInfo.picture,
+        },
+      });
     } catch (error) {
       console.error("Error during Kakao authentication:", error);
       res.status(500).json({ message: "Error during Kakao authentication" });
