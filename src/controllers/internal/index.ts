@@ -1,8 +1,11 @@
-// export const getSystemStatus = (req: Request, res: Response) => {
-//   const systemStatus = {
-//     uptime: process.uptime(),
-//     memoryUsage: process.memoryUsage(),
-//     cpuUsage: process.cpuUsage(),
-//   };
-//   res.status(200).json(systemStatus);
-// };
+// class SampleController {
+//     private sample: string;
+//     constructor() {
+//       this.sample = "sample";
+//     }
+//     sampleFunc = () => {
+
+//     }
+// }
+
+// export const sampleController = new SampleController()

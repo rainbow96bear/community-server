@@ -1,35 +1,31 @@
 import { Model, DataTypes, Sequelize } from "sequelize";
 
 export default class Users extends Model {
-  id!: number;
-  nickName!: string;
-  name!: string;
-  gender!: "F" | "M" | null;
-  profileImg?: string;
-  birthday?: string;
+  platform!: string;
+  id!: string;
+  nickname!: string;
+  profile_image?: string;
+  wallet?: string;
 
   public static initModel(sequelize: Sequelize) {
     return Users.init(
       {
-        id: {
-          type: DataTypes.INTEGER.UNSIGNED,
-          autoIncrement: true,
-          primaryKey: true,
+        platform: {
+          type: DataTypes.STRING,
+          allowNull: false,
+          primaryKey: true, // Primary Key 설정
         },
-        name: {
+        id: {
+          type: DataTypes.STRING,
+          allowNull: false,
+          primaryKey: true, // Primary Key 설정
+        },
+        nickname: {
           type: DataTypes.STRING(20),
           allowNull: false,
         },
-        gender: {
-          type: DataTypes.ENUM("F", "M"),
-          allowNull: false,
-        },
-        profileImg: {
+        profile_image: {
           type: DataTypes.STRING,
-          allowNull: true,
-        },
-        birthday: {
-          type: DataTypes.STRING(10),
           allowNull: true,
         },
         wallet: {

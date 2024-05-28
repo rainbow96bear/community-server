@@ -9,8 +9,15 @@ import sessionOptions from "./config/sessionConfig";
 import internalRoutes from "./routes/internal/index";
 import externalRoutes from "./routes/external/index";
 import db from "./models/index";
+import { User } from "@_types/kakao";
 
 dotenv.config();
+declare module "express-session" {
+  interface SessionData {
+    cookie: Cookie;
+    user: User;
+  }
+}
 
 const app = express();
 
@@ -47,7 +54,7 @@ app.listen(port, async () => {
   await db.sequelize
     .authenticate()
     .then(async () => {
-      await db.sequelize.sync({ force: false }).then();
+      await db.sequelize.sync({ force: true }).then();
       console.log("db connected");
     })
     .catch((e: Error) => {
