@@ -13,7 +13,7 @@ export interface KakaoUserInfo {
   picture?: string;
 }
 
-export interface User {
+export interface UserInfo {
   platform: string;
   id: string;
   nickname: string;

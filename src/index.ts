@@ -9,14 +9,14 @@ import sessionOptions from "./config/sessionConfig";
 import internalRoutes from "./routes/internal/index";
 import externalRoutes from "./routes/external/index";
 import db from "./models/index";
-import { User } from "@_types/kakao";
+import { UserInfo } from "@_types/kakao";
 import cookieParser from "cookie-parser";
 
 dotenv.config();
 declare module "express-session" {
   interface SessionData {
     cookie: Cookie;
-    user: User;
+    user: UserInfo;
   }
 }
 

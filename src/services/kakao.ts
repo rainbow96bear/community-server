@@ -1,5 +1,5 @@
 import axios from "axios";
-import { KakaoTokenResponse, KakaoUserInfo, User } from "@_types/kakao";
+import { KakaoTokenResponse, KakaoUserInfo, UserInfo } from "@_types/kakao";
 import Users from "@_models/Users";
 
 class KakaoService {
@@ -70,7 +70,7 @@ class KakaoService {
   findOrCreateUser = async (
     userInfo: KakaoUserInfo,
     platform: string
-  ): Promise<User> => {
+  ): Promise<UserInfo> => {
     const { sub, nickname, picture } = userInfo;
 
     let user = await Users.findOne({ where: { platform, id: sub } });

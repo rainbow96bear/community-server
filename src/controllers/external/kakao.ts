@@ -23,7 +23,7 @@ class KakaoController {
       res.cookie("sessionID", req.sessionID, { httpOnly: true });
 
       res.send({
-        user: {
+        userInfo: {
           id: userInfo.sub,
           nickname: userInfo.nickname,
           profile_image: userInfo.picture,
