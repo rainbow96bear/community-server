@@ -9,14 +9,14 @@ import sessionOptions from "./config/sessionConfig";
 import internalRoutes from "./routes/internal/index";
 import externalRoutes from "./routes/external/index";
 import db from "./models/index";
-import { UserInfo } from "@_types/kakao";
+import { UserInfo } from "@_types/user";
 import cookieParser from "cookie-parser";
 
 dotenv.config();
 declare module "express-session" {
   interface SessionData {
     cookie: Cookie;
-    user: UserInfo;
+    userInfo: UserInfo;
   }
 }
 
@@ -27,6 +27,7 @@ app.use(cookieParser());
 app.use(session(sessionOptions));
 app.use(morgan("combined"));
 app.use(express.json());
+app.use("/files", express.static("files"));
 
 // API 요청 제한 설정
 // const limiter = rateLimit({
@@ -56,7 +57,7 @@ app.listen(port, async () => {
   await db.sequelize
     .authenticate()
     .then(async () => {
-      await db.sequelize.sync({ force: true }).then();
+      await db.sequelize.sync({ force: false }).then();
       console.log("db connected");
     })
     .catch((e: Error) => {

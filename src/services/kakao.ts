@@ -1,6 +1,7 @@
 import axios from "axios";
-import { KakaoTokenResponse, KakaoUserInfo, UserInfo } from "@_types/kakao";
+import { KakaoTokenResponse, KakaoUserInfo } from "@_types/kakao";
 import Users from "@_models/Users";
+import { UserInfo } from "@_types/user";
 
 class KakaoService {
   private api_key: string;
@@ -73,12 +74,12 @@ class KakaoService {
   ): Promise<UserInfo> => {
     const { sub, nickname, picture } = userInfo;
 
-    let user = await Users.findOne({ where: { platform, id: sub } });
+    let user = await Users.findOne({ where: { platform, user_id: sub } });
 
     if (!user) {
       user = await Users.create({
         platform,
-        id: sub,
+        user_id: sub,
         nickname,
         profile_image: picture,
       });
@@ -86,7 +87,6 @@ class KakaoService {
 
     // 'User' 타입의 객체로 반환
     return {
-      platform, // 'platform' 속성 추가
       id: user.dataValues.id,
       nickname: user.dataValues.nickname,
       profile_image: user.dataValues.profile_image,

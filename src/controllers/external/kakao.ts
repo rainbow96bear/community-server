@@ -19,15 +19,11 @@ class KakaoController {
       const userInfo = await kakaoService.getUserInfo(access_token);
       const user = await kakaoService.findOrCreateUser(userInfo, this.platform);
 
-      req.session.user = user;
+      req.session.userInfo = user;
       res.cookie("sessionID", req.sessionID, { httpOnly: true });
 
       res.send({
-        userInfo: {
-          id: userInfo.sub,
-          nickname: userInfo.nickname,
-          profile_image: userInfo.picture,
-        },
+        userInfo: user,
       });
     } catch (error) {
       console.error("Error during Kakao authentication:", error);

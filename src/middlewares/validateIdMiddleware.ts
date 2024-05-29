@@ -5,9 +5,8 @@ const validateIdMiddleware = (
   res: Response,
   next: NextFunction
 ) => {
-  const sessionPlatform = req.session.user?.platform;
-  const sessionId = req.session.user?.id;
-  if (sessionId && sessionPlatform) {
+  const sessionId = req.session.userInfo?.id;
+  if (sessionId && req.body.id && sessionId == req.body.id) {
     next();
   } else {
     req.session.destroy((err) => {
