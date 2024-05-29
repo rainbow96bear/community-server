@@ -9,7 +9,7 @@ const router = Router();
 // oauth
 router.post("/auth/kakao/userinfo", kakaoController.getUserInfo);
 
-router.get("/userinfo", userController.getInfo);
+router.get("/userinfo/:id", userController.getInfo);
 router.patch(
   "/userinfo",
   userController.uploadImage,

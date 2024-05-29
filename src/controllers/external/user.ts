@@ -20,7 +20,7 @@ class UserController {
   }
   getInfo = async (req: Request, res: Response) => {
     try {
-      const userInfo = await userService.getUserInfo(req.session.userInfo?.id!);
+      const userInfo = await userService.getUserInfo(req.params.id);
       res.send({ userInfo });
     } catch (error) {
       res.status(403).json({ message: "Forbidden: User session not found" });
