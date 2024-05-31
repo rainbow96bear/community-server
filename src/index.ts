@@ -11,7 +11,7 @@ import externalRoutes from "./routes/external/index";
 import db from "./models/index";
 import { UserInfo } from "@_types/user";
 import cookieParser from "cookie-parser";
-
+import { initializeCategories } from "@_models/initialize";
 dotenv.config();
 declare module "express-session" {
   interface SessionData {
@@ -59,6 +59,7 @@ app.listen(port, async () => {
     .then(async () => {
       await db.sequelize.sync({ force: false }).then();
       console.log("db connected");
+      initializeCategories();
     })
     .catch((e: Error) => {
       console.log(e);

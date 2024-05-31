@@ -1,24 +1,25 @@
 import { Model, DataTypes, Sequelize, Association } from "sequelize";
-import Posts from "./Posts";
+import Users from "./Users";
 
-export default class Users extends Model {
+export default class Posts extends Model {
   public id!: number;
   public platform!: string;
-  public user_id!: string;
-  public nickname!: string;
-  public profile_image?: string;
-  public wallet?: string;
+  public userId!: number;
+  public category!: string;
+  public subcategory!: string;
+  public title!: string;
+  public content?: string;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 
   // Associations
   public static associations: {
-    posts: Association<Users, Posts>;
+    user: Association<Posts, Users>;
   };
 
   public static initModel(sequelize: Sequelize) {
-    return Users.init(
+    return Posts.init(
       {
         id: {
           type: DataTypes.INTEGER,
@@ -26,25 +27,28 @@ export default class Users extends Model {
           autoIncrement: true,
           primaryKey: true,
         },
-        platform: {
+        category: {
           type: DataTypes.STRING,
           allowNull: false,
         },
-        user_id: {
+        subcategory: {
           type: DataTypes.STRING,
           allowNull: false,
         },
-        nickname: {
-          type: DataTypes.STRING(10),
+        title: {
+          type: DataTypes.STRING(30),
           allowNull: false,
         },
-        profile_image: {
+        content: {
           type: DataTypes.STRING,
           allowNull: true,
         },
-        wallet: {
-          type: DataTypes.STRING(42),
-          allowNull: true,
+        userId: {
+          type: DataTypes.INTEGER,
+          allowNull: true, // Change this to true
+          // Remove references property
+          onUpdate: "CASCADE",
+          onDelete: "SET NULL",
         },
       },
       {
@@ -52,24 +56,18 @@ export default class Users extends Model {
         timestamps: true,
         underscored: true,
         paranoid: false,
-        modelName: "Users",
-        tableName: "users",
+        modelName: "Posts",
+        tableName: "posts",
         charset: "utf8mb4",
         collate: "utf8mb4_general_ci",
-        indexes: [
-          {
-            unique: true,
-            fields: ["platform", "user_id"],
-          },
-        ],
       }
     );
   }
 
-  public static associate(models: { Posts: typeof Posts }) {
-    Users.hasMany(models.Posts, {
+  public static associate(models: { Users: typeof Users }) {
+    Posts.belongsTo(models.Users, {
       foreignKey: "userId",
-      as: "posts",
+      as: "user",
     });
   }
 }
