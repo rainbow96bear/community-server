@@ -1,7 +1,6 @@
 import axios from "axios";
-import { KakaoTokenResponse, KakaoUserInfo } from "@_types/kakao";
 import Users from "@_models/Users";
-import { UserInfo } from "@_types/user";
+import { KakaoTokenResponse, KakaoUserInfo, UserInfo } from "@_types/index";
 
 class KakaoService {
   private api_key: string;
@@ -17,7 +16,7 @@ class KakaoService {
    * @description code와 client_secret으로 access token 얻기
    * @returns access token
    */
-  getToken = async (code: string): Promise<KakaoTokenResponse> => {
+  getToken = async (code: string): Promise<string> => {
     const params = new URLSearchParams({
       grant_type: "authorization_code",
       client_id: this.api_key,
@@ -27,16 +26,18 @@ class KakaoService {
     });
 
     try {
-      const response = await axios.post<KakaoTokenResponse>(
-        "https://kauth.kakao.com/oauth/token",
-        params,
-        {
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
-        }
-      );
-      return response.data;
+      const response = (
+        await axios.post<KakaoTokenResponse>(
+          "https://kauth.kakao.com/oauth/token",
+          params,
+          {
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+            },
+          }
+        )
+      ).data;
+      return response.access_token;
     } catch (error) {
       console.error("Error fetching Kakao token:", error);
       throw error;

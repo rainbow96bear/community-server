@@ -11,10 +11,9 @@ class KakaoController {
    * @description req.body의 code로 kakao 사용자 정보 얻기
    */
   getUserInfo = async (req: Request, res: Response) => {
-    const { code } = req.body;
+    const code = req.body.code;
     try {
-      const tokenResponse = await kakaoService.getToken(code as string);
-      const { access_token } = tokenResponse;
+      const access_token = await kakaoService.getToken(code as string);
 
       const userInfo = await kakaoService.getUserInfo(access_token);
       const user = await kakaoService.findOrCreateUser(userInfo, this.platform);
@@ -22,7 +21,7 @@ class KakaoController {
       req.session.userInfo = user;
       res.cookie("sessionID", req.sessionID, { httpOnly: true });
 
-      res.send({
+      res.status(200).json({
         userInfo: user,
       });
     } catch (error) {

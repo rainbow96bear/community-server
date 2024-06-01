@@ -11,19 +11,20 @@ const router = Router();
 router.post("/auth/kakao/userinfo", kakaoController.getUserInfo);
 
 // user
-router.get("/userinfos/:id", userController.getInfo);
+router.get("/profiles/:userId", userController.getInfo);
 router.put(
-  "/userinfos/:id",
+  "/profiles/:userId",
   userController.uploadImage,
   validateIdMiddleware,
   userController.patchInfo
 );
 
 // post
+router.get("/posts/:category?/:subcategory?", postController.getPostList);
+router.get("/posts/:category/:subcategory/:id", postController.get);
 router.post("/posts", validateIdMiddleware, postController.upload);
-router.get("/posts/:id", postController.get);
+router.post("/posts/:id", validateIdMiddleware, postController.delete);
 router.put("/posts/:id", validateIdMiddleware, postController.edit);
-router.delete("/posts/:id", validateIdMiddleware, postController.delete);
 
 // category
 router.get("/categories", categoryController.get);

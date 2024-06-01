@@ -20,36 +20,35 @@ class UserController {
   }
   getInfo = async (req: Request, res: Response) => {
     try {
-      const userInfo = await userService.getUserInfo(req.params.id);
-      res.send({ userInfo });
+      const profile = await userService.getUserInfo(req.params.userId);
+      res.status(200).json({ profile });
     } catch (error) {
       res.status(403).json({ message: "Forbidden: User session not found" });
     }
   };
   patchInfo = async (req: Request, res: Response) => {
     try {
-      const { id, nickname, wallet } = req.body;
+      const { userId, nickname, wallet } = req.body;
       const profileImage = req.file;
-      if (req.file) {
-        const userInfo = {
-          id,
-          nickname,
-          wallet,
-          profile_image: `${
-            process.env.IMG_SERVER_URL! + profileImage?.filename
-          }`,
-        };
-        const updatedUserInfo = await userService.updateUserInfo(id, userInfo);
-        res.send({ userInfo: updatedUserInfo });
-      } else {
-        const userInfo = {
-          id,
-          nickname,
-          wallet,
-        };
-        const updatedUserInfo = await userService.updateUserInfo(id, userInfo);
-        res.send({ userInfo: updatedUserInfo });
-      }
+      const newProfile = req.file
+        ? {
+            id: userId,
+            nickname: nickname,
+            wallet: wallet || "",
+            profile_image: `${
+              process.env.IMG_SERVER_URL! + profileImage?.filename
+            }`,
+          }
+        : {
+            id: userId,
+            nickname: nickname,
+            wallet: wallet || "",
+          };
+      const updatedUserInfo = await userService.updateUserInfo(
+        userId,
+        newProfile
+      );
+      res.status(200).json({ profile: updatedUserInfo });
     } catch (error) {
       res.status(403).json({ message: "Fail to Update UserInfo" });
     }

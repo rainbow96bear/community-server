@@ -1,5 +1,5 @@
 import Users from "@_models/Users";
-import { UserInfo } from "@_types/user";
+import { UserInfo } from "@_types/index";
 
 class UserService {
   getUserInfo = async (id: string): Promise<UserInfo | null> => {
@@ -17,23 +17,18 @@ class UserService {
   };
 
   updateUserInfo = async (
-    id: string,
-    userInfo: UserInfo
+    userId: string,
+    profile: UserInfo
   ): Promise<UserInfo | null> => {
-    // const update = {
-    //   nickname: userInfo.nickname,
-    //   profile_image: userInfo.profile_image,
-    //   wallet: userInfo.wallet,
-    // };
-    const [rowsUpdated] = await Users.update(userInfo, {
-      where: { id },
+    const [rowsUpdated] = await Users.update(profile, {
+      where: { id: userId },
     });
 
     if (rowsUpdated > 0) {
-      const updatedUser = await Users.findByPk(id);
+      const updatedUser = await Users.findByPk(userId);
       if (updatedUser) {
         return {
-          id,
+          id: userId,
           nickname: updatedUser.nickname,
           profile_image: updatedUser.profile_image,
           wallet: updatedUser.wallet,

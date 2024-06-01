@@ -9,9 +9,9 @@ import sessionOptions from "./config/sessionConfig";
 import internalRoutes from "./routes/internal/index";
 import externalRoutes from "./routes/external/index";
 import db from "./models/index";
-import { UserInfo } from "@_types/user";
 import cookieParser from "cookie-parser";
 import { initializeCategories } from "@_models/initialize";
+import { UserInfo } from "./types";
 dotenv.config();
 declare module "express-session" {
   interface SessionData {

@@ -6,7 +6,7 @@ const validateIdMiddleware = (
   next: NextFunction
 ) => {
   const sessionId = req.session.userInfo?.id;
-  if (sessionId && req.body.id && sessionId == req.body.id) {
+  if (sessionId && req.body.userId && sessionId == req.body.userId) {
     next();
   } else {
     req.session.destroy((err) => {
