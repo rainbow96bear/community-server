@@ -132,7 +132,6 @@ class PostService {
         }));
       }
 
-      console.log("자 이번에 되어주라", postList);
       return postList;
     } catch (error) {
       console.error("Error fetching posts:", error);

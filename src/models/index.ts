@@ -3,13 +3,18 @@ import { databaseConfig } from "./../config/databaseConfig";
 import Users from "./Users";
 import Posts from "./Posts";
 import Categories from "./Categories";
+import { Config } from "@_types/index";
+
+const env = (process.env.NODE_ENV as keyof Config) || "development";
+const config = databaseConfig[env];
 
 const sequelize = new Sequelize(
-  databaseConfig.development.database,
-  databaseConfig.development.username,
-  databaseConfig.development.password,
+  config.database,
+  config.username,
+  config.password,
   {
-    host: databaseConfig.development.host,
+    host: config.host,
+    port: parseInt(config.port as string, 10),
     dialect: "mysql",
   }
 );

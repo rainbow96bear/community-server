@@ -53,12 +53,14 @@ app.use(
 
 const port = serverConfig.port;
 app.listen(port, async () => {
-  console.log(`Server is running on http://localhost:${port}`);
+  console.log(`Server is running on port:${port}`);
   await db.sequelize
     .authenticate()
     .then(async () => {
       await db.sequelize.sync({ force: false }).then();
       console.log("db connected");
+      console.log("connect : ", process.env.DB_HOST);
+      console.log("connect : ", process.env.DB_PORT);
       initializeCategories();
     })
     .catch((e: Error) => {

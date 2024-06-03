@@ -46,3 +46,18 @@ export interface UserInfo {
   profile_image?: string;
   wallet?: string;
 }
+
+// database
+export interface DatabaseConfig {
+  username: string;
+  password: string | undefined;
+  database: string;
+  host: string;
+  port: string | number;
+}
+
+export interface Config {
+  development: DatabaseConfig;
+  test: DatabaseConfig;
+  production: DatabaseConfig;
+}
