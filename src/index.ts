@@ -58,9 +58,6 @@ app.listen(port, async () => {
     .authenticate()
     .then(async () => {
       await db.sequelize.sync({ force: false }).then();
-      console.log("db connected");
-      console.log("connect : ", process.env.DB_HOST);
-      console.log("connect : ", process.env.DB_PORT);
       initializeCategories();
     })
     .catch((e: Error) => {
