@@ -11,7 +11,6 @@ on:
 
 jobs:
   test-build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -25,8 +24,7 @@ jobs:
     - run: yarn build
     - run: yarn start
 
-
- build:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -39,9 +37,8 @@ jobs:
       run: |
         docker login -u ${{ secrets.DOCKER_HUB_ID }} -p ${{ secrets.DOCKER_HUB_PW }}
         docker build --platform linux/amd64 -t community-server .
-        docker tag node-example its/community-server:${GITHUB_SHA::7}
-        docker push its/community-server:${GITHUB_SHA::7}
-
+        docker tag community-server ${{ secrets.DOCKER_HUB_ID }}/community-server:${GITHUB_SHA::7}
+        docker push ${{ secrets.DOCKER_HUB_ID }}/community-server:${GITHUB_SHA::7}
 
   deploy:
     needs: build
@@ -57,5 +54,5 @@ jobs:
         port: 22
         script: |
           docker login -u "${{ secrets.DOCKER_HUB_ID }}" -p "${{ secrets.DOCKER_HUB_PW }}"
-          docker pull its/community-server:${GITHUB_SHA::7}
-          docker run -d -p 8000:8000 its/community-server:${GITHUB_SHA::7}
+          docker pull ${{ secrets.DOCKER_HUB_ID }}/community-server:${GITHUB_SHA::7}
+          docker run -d -p 8000:8000 ${{ secrets.DOCKER_HUB_ID }}/community-server:${GITHUB_SHA::7}
