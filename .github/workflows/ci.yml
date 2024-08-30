@@ -24,3 +24,20 @@ jobs:
     - run: yarn install
     - run: yarn build
     - run: yarn start
+
+
+ build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js 18.x
+      uses: actions/setup-node@v2
+      with:
+        node-version: '18.x'
+    - name: Docker build
+      run: |
+        docker login -u ${{ secrets.USERNAME }} -p ${{ secrets.PASSWORD }}
+        docker build --platform linux/amd64 -t community-server .
+        docker tag node-example its/community-server:${GITHUB_SHA::7}
+        docker push its/community-server:${GITHUB_SHA::7}
