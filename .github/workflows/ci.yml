@@ -53,9 +53,8 @@ jobs:
         key: ${{ secrets.EC2_SSH_KEY }}
         port: 22
         script: |
-          echo ${{ secrets.EC2_HOST }}
-          echo ${{ secrets.EC2_SSH_KEY }}
-          echo ${{ secrets.EC2_USER }}
+          ssh -i your_key.pem -o IdentitiesOnly=yes -o PubkeyAcceptedAlgorithms=+ssh-rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}
           docker login -u "${{ secrets.DOCKER_HUB_ID }}" -p "${{ secrets.DOCKER_HUB_PW }}"
           docker pull ${{ secrets.DOCKER_HUB_ID }}/community-server:${GITHUB_SHA::7}
           docker run -d -p 8000:8000 ${{ secrets.DOCKER_HUB_ID }}/community-server:${GITHUB_SHA::7}
+
