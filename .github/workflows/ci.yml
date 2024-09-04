@@ -46,14 +46,14 @@ jobs:
 
     steps:
     - name: Build and deploy
-        run: |
+      run: |
           echo "$SSH_PEM_KEY" >> $HOME/key.pem
           chmod 400 $HOME/key.pem
           ssh -i $HOME/key.pem -o StrictHostKeyChecking=no ${SSH_USER}@${SSH_KNOWN_HOSTS} '~/script.sh'
           docker login -u "${{ secrets.DOCKER_HUB_ID }}" -p "${{ secrets.DOCKER_HUB_PW }}"
           docker pull ${{ secrets.DOCKER_HUB_ID }}/community-server:${GITHUB_SHA::7}
           docker run -d -p 8000:8000 ${{ secrets.DOCKER_HUB_ID }}/community-server:${GITHUB_SHA::7}
-        env:
+      env:
           SSH_USER: ${{ secrets.EC2_USER }}
           SSH_KNOWN_HOSTS: ${{ secrets.EC2_HOST }}
           SSH_PEM_KEY: ${{ secrets.EC2_SSH_KEY }}
