@@ -25,17 +25,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js 18.x
-      uses: actions/setup-node@v2
-      with:
-        node-version: '18.x'
-    - name: Docker build
-      run: |
-        docker login -u ${{ secrets.DOCKER_HUB_ID }} -p ${{ secrets.DOCKER_HUB_PW }}
-        docker build --platform linux/amd64 -t community-server .
-        docker tag community-server ${{ secrets.DOCKER_HUB_ID }}/community-server:${GITHUB_SHA::7}
-        docker push ${{ secrets.DOCKER_HUB_ID }}/community-server:${GITHUB_SHA::7}
+      - uses: actions/checkout@v2
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v2
+        with:
+          node-version: '18.x'
+      - name: Docker build
+        run: |
+          echo ${{ secrets.DOCKER_HUB_PW }} | docker login -u ${{ secrets.DOCKER_HUB_ID }} --password-stdin
+          docker build --platform linux/amd64 -t community-server .
+          docker tag community-server ${{ secrets.DOCKER_HUB_ID }}/community-server:latest
+          docker push ${{ secrets.DOCKER_HUB_ID }}/community-server:latest
   
   deploy:
     needs: build
@@ -51,10 +51,8 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           port: 22
           script: |
-            systemctl status docker
-            systemctl status docker
-            docker login -u ${{ secrets.DOCKER_HUB_ID }} -p ${{ secrets.DOCKER_HUB_PW }}
-            docker pull ${{ secrets.DOCKER_HUB_ID }}/community-server:${GITHUB_SHA::7}
-            docker stop community-server || true
-            docker rm community-server || true
-            docker run -d --name community-server -p 8000:8000 ${{ secrets.DOCKER_HUB_ID }}/community-server:${GITHUB_SHA::7}
+            echo ${{ secrets.DOCKER_HUB_PW }} | sudo docker login -u ${{ secrets.DOCKER_HUB_ID }} --password-stdin
+            sudo docker pull ${{ secrets.DOCKER_HUB_ID }}/community-server:latest
+            sudo docker stop community-server || true
+            sudo docker rm community-server || true
+            sudo docker run -d --name community-server -p 8000:8000 ${{ secrets.DOCKER_HUB_ID }}/community-server:latest
