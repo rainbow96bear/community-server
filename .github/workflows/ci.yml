@@ -51,8 +51,5 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           port: 22
           script: |
-            docker login -u ${{ secrets.DOCKER_HUB_ID }} -p ${{ secrets.DOCKER_HUB_PW }}
-            docker pull ${{ secrets.DOCKER_HUB_ID }}/community-server:${GITHUB_SHA::7}
-            docker stop community-server || true
-            docker rm community-server || true
-            docker run -d --name community-server -p 80:80 ${{ secrets.DOCKER_HUB_ID }}/community-server:${GITHUB_SHA::7}
+            whoami
+            echo 'this file is made by github action' > fortest
