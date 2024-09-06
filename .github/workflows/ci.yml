@@ -1,6 +1,3 @@
-# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
-
 name: Node.js CI
 
 on:
@@ -46,7 +43,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3.3.0
-      - name: Build and deploy
+      - name: Deploy Docker container
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -54,5 +51,8 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           port: 22
           script: |
-            whoami
-            echo 'this way is right'
+            docker login -u ${{ secrets.DOCKER_HUB_ID }} -p ${{ secrets.DOCKER_HUB_PW }}
+            docker pull ${{ secrets.DOCKER_HUB_ID }}/community-server:${GITHUB_SHA::7}
+            docker stop community-server || true
+            docker rm community-server || true
+            docker run -d --name community-server -p 80:80 ${{ secrets.DOCKER_HUB_ID }}/community-server:${GITHUB_SHA::7}
