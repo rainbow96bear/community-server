@@ -6,7 +6,7 @@ services:
   community-server:
     build:
       dockerfile: Dockerfile
-      context: ./community-server
+      context: .
     container_name: community-server
     networks:
       - community
