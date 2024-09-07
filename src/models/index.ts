@@ -7,7 +7,7 @@ import { Config } from "@_types/index";
 
 const env = (process.env.NODE_ENV as keyof Config) || "development";
 const config = databaseConfig[env];
-console.log(config);
+
 const sequelize = new Sequelize(
   config.database,
   config.username,
