@@ -1,38 +1,15 @@
 version: "3"
-networks:
-  community:
-    driver: bridge
 services:
-  community-server:
-    build:
-      dockerfile: Dockerfile
-      context: .
-    container_name: community-server
-    networks:
-      - community
-    ports:
-      - 8000:8000
-    environment:
-      - NODE_ENV=production
-      - WAIT_HOSTS=community-mysql:3306
-    volumes:
-      - /app/node_modules
-      - ./community-server:/app
-    depends_on:
-      - community-mysql
-
   community-mysql:
     image: mysql:5.7
     container_name: community-mysql
-    networks:
-      - community
-    ports:
-      - 3307:3306
     environment:
-      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
-      MYSQL_DATABASE: ${DB_DBNAME}
+      MYSQL_ROOT_PASSWORD: your_root_password # root 비밀번호 설정
+      MYSQL_DATABASE: your_database_name # 초기 생성할 데이터베이스 설정
+    ports:
+      - "3306:3306"
     volumes:
-      - mysql-data:/var/lib/mysql # 볼륨을 추가하여 데이터의 지속성을 보장합니다.
+      - mysql-data:/var/lib/mysql
 
 volumes:
-  mysql-data: # 이 볼륨이 데이터의 지속성을 보장합니다.
+  mysql-data:
