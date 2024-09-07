@@ -29,6 +29,7 @@ jobs:
             --build-arg PORT=${{ secrets.PORT }} \
             --build-arg SESSION_SECRET=${{ secrets.SESSION_SECRET }} \
             --build-arg IMG_SERVER_URL=${{ secrets.IMG_SERVER_URL }} \
+            --build-arg NODE_ENV=${{ secrets.NODE_ENV }} \
             -t community-server .
 
       - name: Login to Docker Hub
