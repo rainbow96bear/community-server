@@ -2,9 +2,9 @@ name: Node.js CI
 
 on:
   push:
-    branches: [ "master" ]
+    branches: ["master"]
   pull_request:
-    branches: [ "master" ]
+    branches: ["master"]
 
 jobs:
   build:
@@ -15,14 +15,13 @@ jobs:
       - name: Use Node.js 18.x
         uses: actions/setup-node@v2
         with:
-          node-version: '18.x'
+          node-version: "18.x"
       - name: Docker build
         run: |
           echo ${{ secrets.DOCKER_HUB_PW }} | docker login -u ${{ secrets.DOCKER_HUB_ID }} --password-stdin
           docker build --platform linux/amd64 -t community-server .
           docker tag community-server ${{ secrets.DOCKER_HUB_ID }}/community-server:latest
           docker push ${{ secrets.DOCKER_HUB_ID }}/community-server:latest
-
 
   mysql:
     needs: build
@@ -43,10 +42,9 @@ jobs:
             if [ "$(sudo docker ps -aq -f status=exited -f name=community-mysql)" ]; then
               sudo docker rm community-mysql
             fi
-              # MySQL 컨테이너 실행 (secrets를 통해 비밀번호 설정)
-              sudo MYSQL_ROOT_PASSWORD=${{ secrets.DB_PASSWORD }} docker-compose up -d community-mysql
+              sudo docker-compose up -d community-mysql
             fi
-  
+
   deploy:
     needs: mysql
     runs-on: ubuntu-latest
