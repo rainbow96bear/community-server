@@ -85,4 +85,15 @@ jobs:
             sudo docker pull ${{ secrets.DOCKER_HUB_ID }}/community-server:latest
             sudo docker stop community-server || true
             sudo docker rm community-server || true
-            sudo docker run -d --name community-server --network host -p 8000:8000 ${{ secrets.DOCKER_HUB_ID }}/community-server:latest
+            sudo docker run -d --name community-server --network host \
+            -e COMMUNITY_URL=${{ secrets.COMMUNITY_URL }} \
+            -e DB_USERNAME=${{ secrets.DB_USERNAME }} \
+            -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
+            -e DB_DBNAME=${{ secrets.DB_DBNAME }} \
+            -e DB_HOST=${{ secrets.DB_HOST }} \
+            -e PRODUCT_DB_HOST=${{ secrets.PRODUCT_DB_HOST }} \
+            -e DB_PORT=${{ secrets.DB_PORT }} \
+            -e PORT=${{ secrets.PORT }} \
+            -e SESSION_SECRET=${{ secrets.SESSION_SECRET }} \
+            -e IMG_SERVER_URL=${{ secrets.IMG_SERVER_URL }} \
+            ${{ secrets.DOCKER_HUB_ID }}/community-server:latest
