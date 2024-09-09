@@ -1,41 +1,89 @@
-FROM node:18-alpine
+@@ -1,93 +1,53 @@
+name: Node.js CI
 
-# ARG로 환경 변수를 받음
-ARG COMMUNITY_URL
-ARG DB_USERNAME
-ARG DB_PASSWORD
-ARG DB_DBNAME
-ARG DB_HOST
-ARG PRODUCT_DB_HOST
-ARG DB_PORT
-ARG PORT
-ARG SESSION_SECRET
-ARG IMG_SERVER_URL
+on:
+  push:
+    branches: ["master"]
+  pull_request:
+    branches: ["master"]
 
-# 환경 변수를 설정
-ENV COMMUNITY_URL=$COMMUNITY_URL
-ENV DB_USERNAME=$DB_USERNAME
-ENV DB_PASSWORD=$DB_PASSWORD
-ENV DB_DBNAME=$DB_DBNAME
-ENV DB_HOST=$DB_HOST
-ENV PRODUCT_DB_HOST=$PRODUCT_DB_HOST
-ENV DB_PORT=$DB_PORT
-ENV PORT=$PORT
-ENV SESSION_SECRET=$SESSION_SECRET
-ENV IMG_SERVER_URL=$IMG_SERVER_URL
+jobs:
+  build:
+    runs-on: ubuntu-latest
 
-# 작업 디렉토리 생성 및 설정
-RUN mkdir /community-server
-WORKDIR /community-server
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v2
+        with:
+          node-version: "18.x"
+      - name: Set up environment variables for build
+        run: |
+          docker build --platform linux/amd64 \
+            --build-arg COMMUNITY_URL=${{ secrets.COMMUNITY_URL }} \
+            --build-arg DB_USERNAME=${{ secrets.DB_USERNAME }} \
+            --build-arg DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
+            --build-arg DB_DBNAME=${{ secrets.DB_DBNAME }} \
+            --build-arg DB_HOST=${{ secrets.DB_HOST }} \
+            --build-arg PRODUCT_DB_HOST=${{ secrets.PRODUCT_DB_HOST }} \
+            --build-arg DB_PORT=${{ secrets.DB_PORT }} \
+            --build-arg PORT=${{ secrets.PORT }} \
+            --build-arg SESSION_SECRET=${{ secrets.SESSION_SECRET }} \
+            --build-arg IMG_SERVER_URL=${{ secrets.IMG_SERVER_URL }} \
+            --build-arg NODE_ENV=${{ secrets.NODE_ENV }} \
+            -t community-server .
+      - name: Login to Docker Hub
+        run: echo ${{ secrets.DOCKER_HUB_PW }} | docker login -u ${{ secrets.DOCKER_HUB_ID }} --password-stdin
 
-# 패키지 설치 및 애플리케이션 복사
-COPY ./package.json ./
-RUN yarn install --no-cache
-COPY . .
+      - name: Docker build and push
+        run: |
+          docker tag community-server ${{ secrets.DOCKER_HUB_ID }}/community-server:latest
+          docker push ${{ secrets.DOCKER_HUB_ID }}/community-server:latest
+  mysql:
+    needs: build
+    runs-on: ubuntu-latest
 
-# wait 도구 추가 및 권한 설정
-ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.2.1/wait /wait
-RUN chmod +x /wait
+    steps:
+      - uses: actions/checkout@v3.3.0
+      - name: Deploy Docker container
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
+          script: |
+            echo ${{ secrets.DOCKER_HUB_PW }} | sudo docker login -u ${{ secrets.DOCKER_HUB_ID }} --password-stdin
+            # MySQL 컨테이너가 실행 중인지 확인
+            if [ ! "$(sudo docker ps -q -f name=community-mysql)" ]; then
+              if [ "$(sudo docker ps -aq -f status=exited -f name=community-mysql)" ]; then
+                # 중지된 MySQL 컨테이너가 있으면 제거
+                sudo docker rm community-mysql
+              fi
+              # MySQL 컨테이너 실행
+              sudo docker run -d --name community-mysql \
+                --network host \
+                -e MYSQL_ROOT_PASSWORD=${{ secrets.DB_PASSWORD }} \
+                -e MYSQL_DATABASE=its-playground \
+                -p 3306:3306 \
+                mysql:5.7
+            fi
+  deploy:
+    needs: mysql
+    runs-on: ubuntu-latest
 
-# 애플리케이션 시작
-CMD /wait && yarn start
+    steps:
+      - uses: actions/checkout@v3.3.0
+      - name: Deploy Docker container
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
+          script: |
+            echo ${{ secrets.DOCKER_HUB_PW }} | sudo docker login -u ${{ secrets.DOCKER_HUB_ID }} --password-stdin
+            sudo docker pull ${{ secrets.DOCKER_HUB_ID }}/community-server:latest
+            sudo docker stop community-server || true
+            sudo docker rm community-server || true
+            sudo docker run -d --name community-server --network host -p 8000:8000 ${{ secrets.DOCKER_HUB_ID }}/community-server:latest
