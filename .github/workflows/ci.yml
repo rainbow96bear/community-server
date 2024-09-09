@@ -64,7 +64,6 @@ jobs:
               fi
 
               # MySQL 컨테이너 실행
-              sudo docker rm community-mysql
               sudo docker run -d --name community-mysql \
                 --network host \
                 -e MYSQL_ROOT_PASSWORD=${{ secrets.DB_PASSWORD }} \
