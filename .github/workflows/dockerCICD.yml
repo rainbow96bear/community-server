@@ -84,4 +84,7 @@ jobs:
             -e PORT=${{ secrets.PORT }} \
             -e SESSION_SECRET=${{ secrets.SESSION_SECRET }} \
             -e IMG_SERVER_URL=${{ secrets.IMG_SERVER_URL }} \
+            -e KAKAO_RESTFUL_API_KEY=${{ secrets.KAKAO_RESTFUL_API_KEY }} \
+            -e KAKAO_CLIENT_SECRET=${{ secrets.KAKAO_CLIENT_SECRET }} \
+            -e KAKAO_REDIRECT_URI=${{ secrets.KAKAO_REDIRECT_URI }} \
             ${{ secrets.DOCKER_HUB_ID }}/community-server:latest
