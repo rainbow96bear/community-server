@@ -28,18 +28,6 @@ ENV IMG_SERVER_URL=$IMG_SERVER_URL
 RUN mkdir /community-server
 WORKDIR /community-server
 
-# .env 파일 생성
-RUN echo "COMMUNITY_URL=${COMMUNITY_URL}" > .env && \
-    echo "DB_USERNAME=${DB_USERNAME}" >> .env && \
-    echo "DB_PASSWORD=${DB_PASSWORD}" >> .env && \
-    echo "DB_DBNAME=${DB_DBNAME}" >> .env && \
-    echo "DB_HOST=${DB_HOST}" >> .env && \
-    echo "PRODUCT_DB_HOST=${PRODUCT_DB_HOST}" >> .env && \
-    echo "DB_PORT=${DB_PORT}" >> .env && \
-    echo "PORT=${PORT}" >> .env && \
-    echo "SESSION_SECRET=${SESSION_SECRET}" >> .env && \
-    echo "IMG_SERVER_URL=${IMG_SERVER_URL}" >> .env
-
 # 패키지 설치 및 애플리케이션 복사
 COPY ./package.json ./
 RUN yarn install --no-cache
