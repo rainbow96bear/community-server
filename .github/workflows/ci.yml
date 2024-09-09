@@ -65,6 +65,7 @@ jobs:
 
               # MySQL 컨테이너 실행
               sudo docker run -d --name community-mysql \
+                --network host \
                 -e MYSQL_ROOT_PASSWORD=${{ secrets.DB_PASSWORD }} \
                 -e MYSQL_DATABASE=its-playground \
                 -p 3306:3306 \
@@ -89,4 +90,4 @@ jobs:
             sudo docker pull ${{ secrets.DOCKER_HUB_ID }}/community-server:latest
             sudo docker stop community-server || true
             sudo docker rm community-server || true
-            sudo docker run -d --name community-server -p 8000:8000 ${{ secrets.DOCKER_HUB_ID }}/community-server:latest
+            sudo docker run -d --name community-server --network host -p 8000:8000 ${{ secrets.DOCKER_HUB_ID }}/community-server:latest
