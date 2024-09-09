@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const sessionOptions = {
-  secret: process.env.SESSION_SECRET!,
+  secret: "test",
   resave: false,
   saveUninitialized: false,
   cookie: { httpOnly: true, secure: false },
