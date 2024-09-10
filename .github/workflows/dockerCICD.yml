@@ -18,19 +18,19 @@ jobs:
           node-version: "18.x"
       - name: Set up environment variables for build
         run: |
-                    docker build --platform linux/amd64 \
-            --build-arg COMMUNITY_URL=${{ secrets.COMMUNITY_URL }} \
-            --build-arg DB_USERNAME=${{ secrets.DB_USERNAME }} \
-            --build-arg DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
-            --build-arg DB_DBNAME=${{ secrets.DB_DBNAME }} \
-            --build-arg DB_HOST=${{ secrets.DB_HOST }} \
-            --build-arg PRODUCT_DB_HOST=${{ secrets.PRODUCT_DB_HOST }} \
-            --build-arg DB_PORT=${{ secrets.DB_PORT }} \
-            --build-arg PORT=${{ secrets.PORT }} \
-            --build-arg SESSION_SECRET=${{ secrets.SESSION_SECRET }} \
-            --build-arg IMG_SERVER_URL=${{ secrets.IMG_SERVER_URL }} \
-            --build-arg NODE_ENV=${{ secrets.NODE_ENV }} \
-            -t community-server .
+          docker build --platform linux/amd64 \
+          --build-arg COMMUNITY_URL=${{ secrets.COMMUNITY_URL }} \
+          --build-arg DB_USERNAME=${{ secrets.DB_USERNAME }} \
+          --build-arg DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
+          --build-arg DB_DBNAME=${{ secrets.DB_DBNAME }} \
+          --build-arg DB_HOST=${{ secrets.DB_HOST }} \
+          --build-arg PRODUCT_DB_HOST=${{ secrets.PRODUCT_DB_HOST }} \
+          --build-arg DB_PORT=${{ secrets.DB_PORT }} \
+          --build-arg PORT=${{ secrets.PORT }} \
+          --build-arg SESSION_SECRET=${{ secrets.SESSION_SECRET }} \
+          --build-arg IMG_SERVER_URL=${{ secrets.IMG_SERVER_URL }} \
+          --build-arg NODE_ENV=${{ secrets.NODE_ENV }} \
+          -t community-server .
       - name: Login to Docker Hub
         run: echo ${{ secrets.DOCKER_HUB_PW }} | docker login -u ${{ secrets.DOCKER_HUB_ID }} --password-stdin
 
