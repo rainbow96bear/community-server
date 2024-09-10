@@ -87,4 +87,5 @@ jobs:
             -e KAKAO_RESTFUL_API_KEY=${{ secrets.KAKAO_RESTFUL_API_KEY }} \
             -e KAKAO_CLIENT_SECRET=${{ secrets.KAKAO_CLIENT_SECRET }} \
             -e KAKAO_REDIRECT_URI=${{ secrets.KAKAO_REDIRECT_URI }} \
+            -p 8000:8000 \
             ${{ secrets.DOCKER_HUB_ID }}/community-server:latest
