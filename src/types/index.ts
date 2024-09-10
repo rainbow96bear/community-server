@@ -58,6 +58,6 @@ export interface DatabaseConfig {
 
 export interface Config {
   development: DatabaseConfig;
-  test: DatabaseConfig;
+  docker_compose: DatabaseConfig;
   production: DatabaseConfig;
 }

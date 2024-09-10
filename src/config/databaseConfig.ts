@@ -11,18 +11,18 @@ export const databaseConfig: Config = {
     host: "localhost",
     port: process.env.DB_PORT || 3306,
   },
-  test: {
+  docker_compose: {
     username: process.env.DB_USERNAME || "root",
     password: process.env.DB_PASSWORD,
     database: process.env.DB_DBNAME || "its-playground",
-    host: process.env.DB_HOST || "localhost",
+    host: process.env.DB_HOST || "community-mysql",
     port: process.env.DB_PORT || 3306,
   },
   production: {
     username: process.env.DB_USERNAME || "root",
     password: process.env.DB_PASSWORD,
     database: process.env.DB_DBNAME || "its-playground",
-    host: process.env.PRODUCT_DB_HOST || "community-mysql",
+    host: process.env.PRODUCT_DB_HOST || "localhost",
     port: process.env.DB_PORT || 3306,
   },
 };
