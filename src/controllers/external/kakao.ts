@@ -14,9 +14,7 @@ class KakaoController {
     const code = req.body.code;
     try {
       const access_token = await kakaoService.getToken(code as string);
-      console.log("access_token : ", access_token);
       const userInfo = await kakaoService.getUserInfo(access_token);
-      console.log("userInfo : ", userInfo);
       const user = await kakaoService.findOrCreateUser(userInfo, this.platform);
 
       req.session.userInfo = user;
