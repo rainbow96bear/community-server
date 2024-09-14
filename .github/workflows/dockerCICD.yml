@@ -99,7 +99,7 @@ jobs:
           port: 22
           script: |
             echo ${{ secrets.DOCKER_HUB_PW }} | sudo docker login -u ${{ secrets.DOCKER_HUB_ID }} --password-stdin
-            sudo docker system prune -a --volumes
-            sudo docker image prune -a
-            sudo docker container prune
-            sudo docker volume prune
+            sudo docker system prune -a --volumes -f
+            sudo docker image prune -a -f
+            sudo docker container prune -f
+            sudo docker volume prune -f
