@@ -89,9 +89,8 @@ jobs:
             -e KAKAO_REDIRECT_URI=${{ secrets.KAKAO_REDIRECT_URI }} \
             -p 8000:8000 \
             ${{ secrets.DOCKER_HUB_ID }}/community-server:latest
-            
-    steps:
-      - name: docker prun
+
+      - name: docker prune
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.EC2_HOST }}
