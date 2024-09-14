@@ -18,7 +18,7 @@ jobs:
           node-version: "18.x"
       - name: Set up environment variables for build
         run: |
-          docker build --platform linux/amd64 -t community-server .
+          docker build --no-cache --platform linux/amd64 -t community-server .
       - name: Login to Docker Hub
         run: echo ${{ secrets.DOCKER_HUB_PW }} | docker login -u ${{ secrets.DOCKER_HUB_ID }} --password-stdin
 
@@ -89,3 +89,18 @@ jobs:
             -e KAKAO_REDIRECT_URI=${{ secrets.KAKAO_REDIRECT_URI }} \
             -p 8000:8000 \
             ${{ secrets.DOCKER_HUB_ID }}/community-server:latest
+            
+    steps:
+      - name: docker prun
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
+          script: |
+            echo ${{ secrets.DOCKER_HUB_PW }} | sudo docker login -u ${{ secrets.DOCKER_HUB_ID }} --password-stdin
+            sudo docker system prune -a --volumes
+            sudo docker image prune -a
+            sudo docker container prune
+            sudo docker volume prune
